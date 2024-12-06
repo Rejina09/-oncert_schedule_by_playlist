@@ -36,3 +36,5 @@ docker-compose.yml
 coverage/
 .nyc_output/
 test-results.xml
+
+config.py
