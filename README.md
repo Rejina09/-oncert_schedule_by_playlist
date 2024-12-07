@@ -18,10 +18,10 @@
 ## Структура проекта
 
 ### [playlist.py](https://github.com/Rejina09/Concert_schedule_by_playlist/blob/main/playlist.py)
-Файл содержит функцию is_valid_playlist_url, принимающая ссылку и проверяющая ее на то, что она с Яндекс Музыки и ссылается на плейлист, и содержит функцию get_playlist_artists, принимающая корректную ссылку на плейлист с Яндекс Музыки (проверенную функцией is_valid_playlist_url) и выдающую список из не более чем пяти артистов, исполняющие первые треки в плейлисте. Если ссылка не корректная, то функция get_playlist_artists выдает ошибку.
+Файл содержит функцию ```is_valid_playlist_url```, принимающая ссылку и проверяющая ее на то, что она с Яндекс Музыки и ссылается на плейлист, и содержит функцию ```get_playlist_artists```, принимающая корректную ссылку на плейлист с Яндекс Музыки (проверенную функцией ```is_valid_playlist_url```) и выдающую список из не более чем пяти артистов, исполняющие первые треки в плейлисте. Если ссылка не корректная, то функция ```get_playlist_artists``` выдает ошибку.
 
 ### [test_playlist.py](https://github.com/Rejina09/Concert_schedule_by_playlist/blob/main/test_playlist.py)
-Файл содержит тесты, проверяющие работу функций is_valid_playlist_url и get_playlist_artists.
+Файл содержит тесты, проверяющие работу функций ```is_valid_playlist_url``` и ```get_playlist_artists```.
 
 ### [concert_searcher.py](https://github.com/Rejina09/Concert_schedule_by_playlist/blob/main/concert_searcher.py)
 Файл содержит класс ```Concert``` для хранения информации о концерте, ```ConcertSearcher```, который автоматически запускает web движок Chrome, для парсинга концертов, используя библиотеку ```Selenium```; в классе ```ConcertSearcher```  метод ```search_concerts```, который принимает на вход название исполнителя и возвращает список его концертов. А также служебная функция ```extract_concert_info_for_afisha_ru``` для извлечения информации о концерте из строки с информцией о концерте спарсенной с сайта afisha.ru. Тукже настроен логгер.
