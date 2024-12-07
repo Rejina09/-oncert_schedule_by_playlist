@@ -34,6 +34,8 @@
 ### [bot.py](https://github.com/Rejina09/Concert_schedule_by_playlist/blob/main/bot.py)
 //дописать (Регина)
 
+###### (файлы с тестами лежат в отдельной ветке ```tests```)
+
 
 ## Сборка
 Как установить, запустить от лица разработчика.
@@ -68,7 +70,8 @@ YANDEX_MUSIC_TOKEN = "token_your_account"
 Необходимо начать работу с ботом с помощью команды ```\start```, передать ему ссылку на свой плейлист Яндекс.Музыки. Более подробный процесс работы с ботом можно увидеть [здесь](https://drive.google.com/file/d/1BE8hUgLY5ckMS5GE33efrkJi7DDHaWyx/view?usp=drive_link).
 
 ## Тестирование
-В файле [test_playlist.py](#test_playlist.py) содержатся тесты для [playlist.py](#playlist.py) .проверки обработки ссылки на плейлист и самого плейста.
+Файлы с тестами находятся в отдельной ветке ```tests```.  
+В файле [test_playlist.py](#test_playlist.py) содержатся тесты для [playlist.py](#playlist.py) .проверки обработки ссылки на плейлист и самого плейста.  
 В файле [test_concert_searcher.py](#test_concert_searcher.py) содержатся тесты для [concert_searcher.py](#concert_searcher.py).
 
 На гугл-диске содержатся [видеоотчет](https://drive.google.com/file/d/1BE8hUgLY5ckMS5GE33efrkJi7DDHaWyx/view?usp=drive_link) по тестированию работы нашего бота, [файл](https://docs.google.com/document/d/1A92xYJe9rlYYSt_doerm0t5KUxjPn9rurxx16zNw1BE/edit?tab=t.0) с фото-отчетом по тестированию работы бота, [видеоотчет](https://drive.google.com/file/d/10lFCnpHITtT_FWFlqPJqIvQNW_8BnVeA/view?usp=drive_link) тестирования кода Телеграм бота.
