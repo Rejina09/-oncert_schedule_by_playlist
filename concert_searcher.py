@@ -14,6 +14,7 @@ import threading
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+# Функция для извлечения информации о концерте из строки с информацией о концерте на afisha.ru в формате "21 декабря 2024, 21 декабря в 20:00, Барвиха Luxury Village"
 def extract_concert_info_for_afisha_ru(concert_info):
     date_pattern = r"(\d{1,2} [а-яА-Я]+ \d{4}), (\d{1,2} [а-яА-Я]+ в \d{1,2}:\d{2})"
     place_pattern = r", ([^,]+)$"
