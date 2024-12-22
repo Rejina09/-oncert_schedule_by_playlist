@@ -7,12 +7,10 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 def is_valid_playlist_url(url):
     pattern1 = r'^https://music\.yandex\.ru/users/([a-zA-Z0-9!"#$%&()*+,\-./:;<=>?@\[\\\]^_`{|}~]+)/playlists/(\d+)(\?utm_medium=copy_link)?$'
-    pattern2 = r'^https://next\.music\.yandex\.ru/playlists/([a-f0-9\-]+)(\?utm_medium=copy_link)?$'
     match1 = re.match(pattern1, url)
-    match2 = re.match(pattern2, url)
     if "yandex.ru" not in url:
         raise InvalidURL("Ссылка на плейлист не с Яндекс музыки")
-    if match1 or match2:
+    if match1:
         return True
     else:
         raise InvalidURL("Некорректный формат ссылки")
