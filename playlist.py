@@ -34,3 +34,4 @@ def get_playlist_artists(playlist_url, token, count):
     except Exception as e:
         logging.error(f"Ошибка при получении артистов из плейлиста: {e}")
         raise
+
