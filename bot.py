@@ -49,12 +49,12 @@ def send_welcome(message):
 @bot.message_handler(func=lambda message: message.text == "Получить список концертов.")
 def concert_filters(message):
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    key_yes = types.KeyboardButton(text='Да, хочу задать число концертов.')
+    key_yes = types.KeyboardButton(text='Да, хочу задать число исполнителей.')
     key_no = types.KeyboardButton(text='Нет, произвольные 5 подойдут.')
     keyboard.add(key_yes, key_no)
     button1 = types.KeyboardButton("/start")
     keyboard.add(button1)
-    question = 'Нужно ли ограничение на число концертов?\nИли пришлём произвольные 5 по умолчанию.'
+    question = 'Нужно ли ограничение на число исполнителей?\nИли пришлём произвольных 5 по умолчанию.'
     bot.send_message(message.from_user.id, text=question, reply_markup=keyboard)
     logging.info(f"Пользователю {message.from_user.id} предложено наложить ограничения.")
 
@@ -62,22 +62,23 @@ def concert_filters(message):
 def button_response(message):
     bot.send_message(
         message.from_user.id,
-        "Пришли мне ссылку на свой плейлист в Яндекс.Музыке, а я отправлю тебе возможные концерты!"
+        "Пришли мне ссылку на свой плейлист в Яндекс.Музыке, а я отправлю тебе список исполнителей!"
     )
     bot.register_next_step_handler(message, partial(playlist, num_concerts=5))
-    logging.info(f"Пользователь {message.from_user.id} запросил список концертов.")
+    logging.info(f"Пользователь {message.from_user.id} запросил список исполнителей.")
 
-@bot.message_handler(func=lambda message: message.text == "Да, хочу задать число концертов.")
+@bot.message_handler(func=lambda message: message.text == "Да, хочу задать число исполнителей.")
 def button_response(message):
     bot.send_message(
         message.from_user.id,
-        "Введи предпочитаемое количество концертов."
+        "Введи предпочитаемое количество исполнителей."
     )
     bot.register_next_step_handler(message,  handle_concerts_count)
-    logging.info(f"Пользователь {message.from_user.id} хочет задать количество концертов.")
+    logging.info(f"Пользователь {message.from_user.id} хочет задать количество исполнителей.")
 
 def handle_concerts_count(message):
     try:
+        global num_concerts
         num_concerts = int(message.text)
         
         if num_concerts < 1 or num_concerts > 10:
@@ -96,7 +97,7 @@ def handle_concerts_count(message):
         else:
             bot.send_message(message.from_user.id, f"Отлично! Пожалуйста, пришли ссылку на плейлист.")
             bot.register_next_step_handler(message, partial(playlist, num_concerts=num_concerts))
-            logging.info(f"Пользователь {message.from_user.id} выбрал {num_concerts} концертов.")
+            logging.info(f"Пользователь {message.from_user.id} выбрал число {num_concerts}.")
             logging.info(f"Пользователь {message.from_user.id} запросил список концертов.")
     
     except ValueError:
@@ -117,7 +118,7 @@ def handle_concerts_count(message):
 def retry_number(message):
     bot.send_message(
         message.from_user.id,
-        "Введи предпочитаемое количество концертов."
+        "Введи предпочитаемое количество исполнителей."
     )
     bot.register_next_step_handler(message, handle_concerts_count)
     logging.info(f"Пользователь {message.from_user.id} решил ввести число заново.")
@@ -131,7 +132,7 @@ def stop_bot(message):
 def handle_response(message):
     if message.text == 'Да, я пришлю новую ссылку.':
         bot.send_message(message.chat.id, "Пожалуйста, пришли ссылку.")
-        bot.register_next_step_handler(message, playlist)
+        bot.register_next_step_handler(message, partial(playlist, num_concerts=num_concerts))
         logging.info(f"Пользователь {message.from_user.id} решил прислать новую ссылку.")
     elif message.text == 'Нет, остановить работу бота.':
         bot.send_message(message.from_user.id, "Обращайся, когда мы тебе понадобимся!")
@@ -146,9 +147,10 @@ def playlist(message, num_concerts):
             bot.send_message(message.from_user.id, "Я обрабатываю твой запрос, это может занять немного времени :)")
             logging.info(f"Обработка плейлиста для пользователя {message.from_user.id}")
 
-            artists = get_playlist_artists(playlist_link, YANDEX_MUSIC_TOKEN, num_concerts) #замени 5 на норм переменную
+            artists = get_playlist_artists(playlist_link, YANDEX_MUSIC_TOKEN, num_concerts) 
             logging.info(f"Извлечённые артисты: {artists}")
-            concerts(message, artists)
+
+            send_artist_keyboard(message, artists)
     except InvalidURL as e:
         logging.warning(f"Неверная ссылка от пользователя {message.from_user.id}: {e}")
         if "не с Яндекс музыки" in str(e):
@@ -159,6 +161,57 @@ def playlist(message, num_concerts):
             bot.send_message(message.from_user.id, "Ты направил некорректный формат ссылки.")
         error_playlist(message)
 
+def handle_artist_selection(message, artists):
+    selected_artist = message.text  
+    
+    if selected_artist == "Нет, остановить работу бота.":
+        bot.send_message(message.from_user.id, "Спасибо за использование бота! Возвращайся к нам снова:)")
+        return
+    
+    if selected_artist in artists:
+        bot.send_message(message.from_user.id, f"Ты выбрал артиста: {selected_artist}. Я проверю его концерты.")
+        concerts(message, [selected_artist])
+        
+        remaining_artists = [artist for artist in artists if artist != selected_artist]
+        
+        if remaining_artists:
+            keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+            for artist in remaining_artists:
+                keyboard.add(types.KeyboardButton(text=artist))
+            
+            keyboard.add(types.KeyboardButton(text="Нет, остановить работу бота."))
+            keyboard.add(types.KeyboardButton(text="/start"))
+            
+            bot.send_message(
+                message.from_user.id,
+                "Можешь выбрать ещё одного артиста или приостановить работу.",
+                reply_markup=keyboard
+            )
+            
+            bot.register_next_step_handler(message, handle_artist_selection, remaining_artists)
+        else:
+            bot.send_message(message.from_user.id, "Все артисты были обработаны. Спасибо за использование бота!")
+    else:
+        bot.send_message(message.from_user.id, "Выбранный артист не найден в списке. Попробуйте ещё раз.")
+        send_artist_keyboard(message, artists)
+
+
+def send_artist_keyboard(message, artists):
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    for artist in artists:
+        keyboard.add(types.KeyboardButton(text=artist))
+    
+    keyboard.add(types.KeyboardButton(text="Завершить"))
+    keyboard.add(types.KeyboardButton(text="/start"))
+    
+    bot.send_message(
+        message.from_user.id,
+        "Выбери артиста из списка:",
+        reply_markup=keyboard
+    )
+
+    bot.register_next_step_handler(message, handle_artist_selection, artists)
+
 def error_playlist(message):
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     key_yes = types.KeyboardButton(text='Да, я пришлю новую ссылку.')
@@ -166,7 +219,7 @@ def error_playlist(message):
     keyboard.add(key_yes, key_no)
     button1 = types.KeyboardButton("/start")
     keyboard.add(button1)
-    question = 'Хотите ли вы заменить ссылку?'
+    question = 'Хочешь заменить ссылку?'
     bot.send_message(message.from_user.id, text=question, reply_markup=keyboard)
     logging.info(f"Пользователю {message.from_user.id} предложено заменить ссылку.")
 
