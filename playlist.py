@@ -34,11 +34,3 @@ def get_playlist_artists(playlist_url, token, count):
     except Exception as e:
         logging.error(f"Ошибка при получении артистов из плейлиста: {e}")
         raise
-
-
-p = "https://music.yandex.ru/users/Ender.Wiggin.2017/playlists/1068"
-cu = (get_playlist_artists(p, "y0_AgAAAABgq2O1AAG8XgAAAAD6-nL2AAABk9x-o1lEt40j_7E_BFi3l6JBSQ", 5))
-print(is_valid_playlist_url(p))
-
-p1 = "https://music.yandex.ru/users/yalalka977/playlists/102"
-print(is_valid_playlist_url(p1))
