@@ -7,9 +7,9 @@ import threading
 import random
 import time
 
-from project_bot.Concert_schedule_by_playlist.Playlist.playlist import is_valid_playlist_url, InvalidURL, \
+from Playlist.playlist import is_valid_playlist_url, InvalidURL, \
     get_playlist_artists
-from project_bot.Concert_schedule_by_playlist.Concert_Searcher.concert_searcher import ConcertSearcher
+from Concert_Searcher.concert_searcher import ConcertSearcher
 import config
 
 logger = logging.getLogger()
