@@ -3,7 +3,8 @@ import re
 import logging
 from http.client import InvalidURL
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
 
 def is_valid_playlist_url(url):
     pattern1 = r'^https://music\.yandex\.ru/users/([a-zA-Z0-9!"#$%&()*+,\-./:;<=>?@\[\\\]^_`{|}~]+)/playlists/(\d+)(\?utm_medium=copy_link)?$'
@@ -14,6 +15,7 @@ def is_valid_playlist_url(url):
         return True
     else:
         raise InvalidURL("Некорректный формат ссылки")
+
 
 def get_playlist_artists(playlist_url, token, count):
     try:
@@ -29,8 +31,8 @@ def get_playlist_artists(playlist_url, token, count):
                 artists.update(artist.name for artist in track.artists)
             if len(artists) >= count:
                 break
-        logging.info(f"Извлечённые артисты из плейлиста: {artists}")
+        logger.info(f"Извлечённые артисты из плейлиста: {artists}")
         return list(artists)[:count]
     except Exception as e:
-        logging.error(f"Ошибка при получении артистов из плейлиста: {e}")
+        logger.error(f"Ошибка при получении артистов из плейлиста: {e}")
         raise
