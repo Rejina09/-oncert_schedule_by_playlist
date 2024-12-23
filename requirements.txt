@@ -2,6 +2,7 @@ pyTelegramBotAPI==4.8.0
 selenium==4.10.0
 yandex-music==2.2.0
 webdriver-manager==3.4.2
+chromedriver_autoinstaller==0.2.2
 
 
 #также должен быть установлен webdriver для браузера Chrome (обычно он устанавливается вместе с браузером автоматически)

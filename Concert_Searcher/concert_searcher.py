@@ -5,6 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
+import chromedriver_autoinstaller
 
 import logging
 import time
@@ -79,6 +80,7 @@ class ConcertSearcher:
         chrome_options.add_argument(f"user-agent={user_agent}")
 
         try:
+            chromedriver_autoinstaller.install()
             self.__service = Service(ChromeDriverManager().install())
             self.__driver = webdriver.Chrome(service=self.__service,options=chrome_options)
             self.wait = WebDriverWait(self.__driver, 10)  # таймаут для WebDriverWait — 10 секунд
