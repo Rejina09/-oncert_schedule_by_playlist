@@ -3,6 +3,8 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
 
 import logging
 import time
@@ -77,7 +79,8 @@ class ConcertSearcher:
         chrome_options.add_argument(f"user-agent={user_agent}")
 
         try:
-            self.__driver = webdriver.Chrome(options=chrome_options)
+            self.__service = Service(ChromeDriverManager().install())
+            self.__driver = webdriver.Chrome(service=self.__service,options=chrome_options)
             self.wait = WebDriverWait(self.__driver, 10)  # таймаут для WebDriverWait — 10 секунд
             logger.info("WebDriver инициализирован.")
         except Exception as e:
@@ -115,7 +118,7 @@ class ConcertSearcher:
         # chrome_options.add_argument("--disable-dev-shm-usage")
         user_agent = random.choice(USER_AGENTS)
         chrome_options.add_argument(f"user-agent={user_agent}")
-        self.__driver = webdriver.Chrome(options=chrome_options)
+        self.__driver = webdriver.Chrome(service=self.__service,options=chrome_options)
         self.wait = WebDriverWait(self.__driver, 10)
         self._requests_counter = 0  # сброс счётчика
         logger.info("WebDriver переинициализирован.")
